@@ -94,9 +94,9 @@ class SmartDemux():
                 continue
             video = re.findall("(?<=src: \").*(?=\",)", pageContent)
 
-            item = xbmcgui.ListItem(name[0], iconImage=logo[0])
+            item = xbmcgui.ListItem(name[0], iconImage= self.website + logo[0])
             item.setLabel(name[0])
-            item.setThumbnailImage(logo[0])
+            item.setThumbnailImage(self.website + logo[0])
             xbmcplugin.addDirectoryItem(handle=self.addonHandle, url=video[0], listitem=item)
 
         xbmcplugin.endOfDirectory(self.addonHandle)
