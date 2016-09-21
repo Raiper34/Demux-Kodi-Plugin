@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.video.smart-demux" name="Smart Demux" version="1.0.0" provider-name="Raiper34">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en_gb">Smart Demux</summary>
+    <description lang="en_gb">
+      Smart Demux Live TV
+    </description>
+    <summary lang="cs">Smart Demux</summary>
+    <description lang="cs">
+      Smart Demux Live TV
+    </description>
+    <summary lang="sk">Profi Program</summary>
+    <description lang="sk">
+      Smart Demux Live TV
+    </description>
+    <disclaimer lang="en_gb"></disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license></license>
+    <forum></forum>
+    <website>http://www.raiper34.net</website>
+    <email>raipergm34@gmail.com</email>
+    <source></source>
+  </extension>
+</addon>

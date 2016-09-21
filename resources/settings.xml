@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+    <category label="Prihlasovacie udaje">
+        <setting id="username" type="text" default="" label="Meno"/>
+        <setting id="password" type="text" default="" label="Heslo"/>
+    </category>
+</settings>
