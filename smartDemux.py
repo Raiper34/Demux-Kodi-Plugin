@@ -11,6 +11,8 @@ import urllib2
 import cookielib
 import xml.dom.minidom
 import re
+import os.path
+import datetime
 #Xbmc libraries
 import xbmc
 import xbmcgui
@@ -33,9 +35,21 @@ class SmartDemux():
         settings = xbmcaddon.Addon()
         self.username = settings.getSetting('username')
         self.password = settings.getSetting('password')
-
-        cookies = cookielib.CookieJar()
-        self.opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookies))
+        # Saving cookies and load them, max age of cookie is one day for this
+        cookies = cookielib.MozillaCookieJar()
+        if os.path.exists(os.path.dirname(os.path.realpath(__file__)) + '/cookies'):
+            cookiesDate = datetime.datetime.fromtimestamp(os.path.getmtime(os.path.dirname(os.path.realpath(__file__)) + '/cookies')) + datetime.timedelta(days=1)
+            if cookiesDate > datetime.datetime.now():
+                cookies.load(os.path.dirname(os.path.realpath(__file__)) + '/cookies')
+                self.opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookies))
+            else:
+                self.opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookies))
+                self.opener.open(self.website + 'ucp.php?mode=login', urllib.urlencode({'username': self.username, 'password': self.password, 'redirect': 'index.php', 'sid': '','login': 'Login'}))
+                cookies.save(os.path.dirname(os.path.realpath(__file__)) + '/cookies')
+        else:
+            self.opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookies))
+            self.opener.open(self.website + 'ucp.php?mode=login', urllib.urlencode({'username': self.username, 'password': self.password, 'redirect': 'index.php', 'sid': '','login': 'Login'}))
+            cookies.save(os.path.dirname(os.path.realpath(__file__)) + '/cookies')
 
         self.addon = xbmcaddon.Addon()
 
@@ -49,7 +63,7 @@ class SmartDemux():
     Create Category list
     """
     def createCategories(self):
-        page = self.opener.open(self.website + 'ucp.php?mode=login', urllib.urlencode({'username': self.username, 'password': self.password, 'redirect': 'index.php', 'sid': '', 'login': 'Login'}))
+        page = self.opener.open(self.website + 'index.php')
         pageContent = page.read()
 
         try:
@@ -57,6 +71,7 @@ class SmartDemux():
             categoryLineText = re.findall("<a href=\".*?</a>", categoryAreaText[0], re.DOTALL)
         except:
             xbmc.executebuiltin('Notification(%s, %s, %d)' % ('Info', 'Nespravne uzivatelske meno, alebo heslo!', 3000))
+            os.remove(os.path.dirname(os.path.realpath(__file__)) + '/cookies')
             return
 
         for line in categoryLineText:
@@ -73,8 +88,6 @@ class SmartDemux():
     Create Channel list
     """
     def createChannels(self):
-        #Login
-        page = self.opener.open(self.website + 'ucp.php?mode=login', urllib.urlencode({'username': self.username, 'password': self.password, 'redirect': 'index.php', 'sid': '', 'login': 'Login'}))
         try:
             page = self.opener.open(self.website + self.arguments['link'][0])
             pageContent = page.read()
